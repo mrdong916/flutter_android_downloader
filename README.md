@@ -1,7 +1,7 @@
 
 # Flutter Android Downloader
 
-[![Pub](https://img.shields.io/pub/v/dio.svg?style=flat-square)](https://pub.dartlang.org/packages/flutter_android_downloader)
+[![Pub](https://img.shields.io/pub/v/flutter_android_downloader.svg?style=flat-square)](https://pub.dartlang.org/packages/flutter_android_downloader)
 
 
 flutter_android_downloader 一个调用安卓系统下载管理器的插件
