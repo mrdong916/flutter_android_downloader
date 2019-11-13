@@ -1,0 +1,20 @@
+name: flutter_android_downloader
+description: A Flutter Android Downloader plugin.
+version: 0.0.1
+author: mrdong916
+homepage: https://github.com/mrdong916/flutter_android_downloader
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+flutter:
+  plugin:
+    androidPackage: com.bzqll.flutter_android_downloader
+    pluginClass: FlutterAndroidDownloaderPlugin
