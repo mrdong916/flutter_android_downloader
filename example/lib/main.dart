@@ -19,8 +19,8 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         body: Center(
-          child: FlatButton(
-            child: Text("Download"),
+            child: IconButton(
+                icon: Icon(Icons.file_download),
             onPressed: () {
               FlutterAndroidDownloader.download(
                   "https://qd.myapp.com/myapp/qqteam/AndroidQQ/mobileqq_android.apk",
