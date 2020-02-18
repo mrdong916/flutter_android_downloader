@@ -16,7 +16,7 @@ dependencies:
 ## 创建下载
 
 ```dart
-FlutterAndroidDownloader.download("url", "path", "fileName");
+int downloadId = FlutterAndroidDownloader.download("url", "path", "fileName");
 ```
 
 > 参数说明
@@ -27,7 +27,18 @@ FlutterAndroidDownloader.download("url", "path", "fileName");
 
 - fileName: 保存的文件名称
 
-## 使用的示例
+## 监听下载完成回调信息
+```dart
+FlutterAndroidDownloader.listen((data) {
+  print("success $data");
+  // to do something
+});
+/// 打印信息： success {media_type: application/vnd.android.package-archive, local_uri: file:///storage/emulated/0/ABC/qq.apk, total_size: 80899231, title: qq.apk, uri: https://qd.myapp.com/myapp/qqteam/AndroidQQ/mobileqq_android.apk, status: 8}
+```
+
+> 具体返回参数信息参考 [DownloadManager API](https://developer.android.com/reference/android/app/DownloadManager.html#COLUMN_STATUS)
+
+## 完成使用的示例
 
 ```dart
 import 'package:flutter/material.dart';
@@ -41,11 +52,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  void initState() {
-    super.initState();
-    FlutterAndroidDownloader.getPermission();
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -54,15 +60,30 @@ class _MyAppState extends State<MyApp> {
           child: IconButton(
             icon: Icon(Icons.file_download),
             onPressed: () {
-              FlutterAndroidDownloader.download(
-                  "https://qd.myapp.com/myapp/qqteam/AndroidQQ/mobileqq_android.apk",
-                  "/ABC",
-                  "mobileqq_android.apk");
+              download();
             },
           ),
         ),
       ),
     );
+  }
+
+  void initState() {
+    super.initState();
+    FlutterAndroidDownloader.listen((data) {
+      print("success $data");
+      // to do something
+    });
+  }
+
+  void download() async {
+    int id = await FlutterAndroidDownloader.download(
+        "https://qd.myapp.com/myapp/qqteam/AndroidQQ/mobileqq_android.apk",
+        "/ABC",
+        "qq.apk");
+    print("ID => $id");
+
+    /// to do something
   }
 }
 

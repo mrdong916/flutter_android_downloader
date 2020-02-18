@@ -1,87 +1,84 @@
 package com.bzqll.flutter_android_downloader;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.DownloadManager;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Environment;
+import android.content.Context;
 
-import io.flutter.plugin.common.MethodCall;
+import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.embedding.engine.plugins.activity.ActivityAware;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
+import io.flutter.plugin.common.BinaryMessenger;
+import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodChannel;
-import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
-import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 /**
  * FlutterAndroidDownloaderPlugin
  */
-public class FlutterAndroidDownloaderPlugin implements MethodCallHandler {
+public class FlutterAndroidDownloaderPlugin implements FlutterPlugin,ActivityAware {
 
-    final int PERMISSION_CODE = 1000;
-    String url;
-    String fileName;
-    String directory;
-    Activity activity;
+    private static final String PLUGIN_NAME = "flutter_android_downloader";
+    private static final String EVENT_NAME = "flutter_android_downloader/downloadComplete";
 
-    FlutterAndroidDownloaderPlugin(Activity activity) {
-        this.activity = activity;
-    }
+    private MethodChannel methodChannel;
+    private EventChannel eventChannel;
+    private Activity activity;
 
-    /**
-     * Plugin registration.
-     */
+    /** Plugin registration. */
     public static void registerWith(Registrar registrar) {
-        final MethodChannel channel = new MethodChannel(registrar.messenger(), "flutter_android_downloader");
-        channel.setMethodCallHandler(new FlutterAndroidDownloaderPlugin(registrar.activity()));
+        FlutterAndroidDownloaderPlugin plugin = new FlutterAndroidDownloaderPlugin();
+        plugin.setupChannels(registrar.messenger(), registrar.context(),registrar.activity());
+
     }
 
     @Override
-    public void onMethodCall(MethodCall call, Result result) {
-        if (call.method.equals("getPlatformVersion")) {
-            result.success("Android " + Build.VERSION.RELEASE);
-        } else if (call.method.equals("getPermission")) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (activity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-                    String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
-                    activity.requestPermissions(permissions, PERMISSION_CODE);
-                }
-            }
-        } else if (call.method.equals("Download")) {
-            url = call.argument("url");
-            fileName = call.argument("fileName");
-            directory = call.argument("directory");
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (activity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-                    String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
-                    activity.requestPermissions(permissions, PERMISSION_CODE);
-
-                } else {
-                    startDownloading();
-                }
-            } else {
-                startDownloading();
-            }
-        }
+    public void onAttachedToEngine(FlutterPluginBinding binding) {
+        setupChannels(binding.getBinaryMessenger(), binding.getApplicationContext(),this.activity);
     }
 
-    public void startDownloading() {
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-        request.allowScanningByMediaScanner();
-        Environment.getExternalStoragePublicDirectory(directory).mkdir();
-        request.setDestinationInExternalPublicDir(directory, fileName);
-        // 设置下载网络类型
-        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
-        //设置Notification的标题和描述
-        request.setTitle(fileName);
-        request.setDescription("Downloading files");
-        //设置Notification的显示，和隐藏。
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+    @Override
+    public void onDetachedFromEngine(FlutterPluginBinding binding) {
+        teardownChannels();
+    }
 
-        DownloadManager manager = (DownloadManager) activity.getSystemService(activity.DOWNLOAD_SERVICE);
-        manager.enqueue(request);
+    private void setupChannels(BinaryMessenger messenger, Context context,Activity activity) {
+        methodChannel = new MethodChannel(messenger, PLUGIN_NAME);
+        eventChannel = new EventChannel(messenger, EVENT_NAME);
+        DownloadManager manager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+
+        DownloadMethodChannelHandler methodChannelHandler =
+                new DownloadMethodChannelHandler(context,manager,activity);
+        DownloadBroadcastReceiver receiver =
+                new DownloadBroadcastReceiver(context,manager);
+
+        methodChannel.setMethodCallHandler(methodChannelHandler);
+        eventChannel.setStreamHandler(receiver);
+    }
+
+    private void teardownChannels() {
+        methodChannel.setMethodCallHandler(null);
+        eventChannel.setStreamHandler(null);
+        methodChannel = null;
+        eventChannel = null;
+    }
+
+    @Override
+    public void onAttachedToActivity(ActivityPluginBinding binding) {
+        activity = binding.getActivity();
+    }
+
+    @Override
+    public void onDetachedFromActivityForConfigChanges() {
+        activity = null;
+    }
+
+    @Override
+    public void onReattachedToActivityForConfigChanges(ActivityPluginBinding binding) {
+
+    }
+
+    @Override
+    public void onDetachedFromActivity() {
 
     }
 }

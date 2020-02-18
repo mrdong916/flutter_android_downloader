@@ -1,3 +1,7 @@
+## 0.0.2
+
+* Added download completion callback information
+
 ## 0.0.1+2
 
 * update README.md.
