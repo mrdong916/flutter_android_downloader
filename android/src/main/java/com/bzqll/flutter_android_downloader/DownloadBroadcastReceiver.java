@@ -55,6 +55,7 @@ public class DownloadBroadcastReceiver extends BroadcastReceiver implements Even
                 String media_type = cursor.getString(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_MEDIA_TYPE));
                 String total_size = cursor.getString(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
 
+                result.put("id",id);
                 result.put("title",title);
                 result.put("uri",uri);
                 result.put("status",status);

@@ -15,10 +15,7 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
 /**
  * FlutterAndroidDownloaderPlugin
  */
-public class FlutterAndroidDownloaderPlugin implements FlutterPlugin,ActivityAware {
-
-    private static final String PLUGIN_NAME = "flutter_android_downloader";
-    private static final String EVENT_NAME = "flutter_android_downloader/downloadComplete";
+public class FlutterAndroidDownloaderPlugin implements FlutterPlugin, ActivityAware {
 
     private MethodChannel methodChannel;
     private EventChannel eventChannel;
@@ -42,8 +39,8 @@ public class FlutterAndroidDownloaderPlugin implements FlutterPlugin,ActivityAwa
     }
 
     private void setupChannels(BinaryMessenger messenger, Context context,Activity activity) {
-        methodChannel = new MethodChannel(messenger, PLUGIN_NAME);
-        eventChannel = new EventChannel(messenger, EVENT_NAME);
+        methodChannel = new MethodChannel(messenger, "com.bzqll.android_downloader/download");
+        eventChannel = new EventChannel(messenger, "com.bzqll.android_downloader/complete");
         DownloadManager manager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
 
         DownloadMethodChannelHandler methodChannelHandler =

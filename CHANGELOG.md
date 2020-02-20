@@ -1,3 +1,7 @@
+## 0.0.3
+
+* fix bug
+
 ## 0.0.2
 
 * Added download completion callback information

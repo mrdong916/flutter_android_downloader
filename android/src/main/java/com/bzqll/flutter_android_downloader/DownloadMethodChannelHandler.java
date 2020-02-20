@@ -9,6 +9,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 
+import java.io.File;
+
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
@@ -38,7 +40,7 @@ public class DownloadMethodChannelHandler implements MethodChannel.MethodCallHan
                     }
                 }
                 break;
-            case "Download":
+            case "download":
                 Long downloadId = null;
                 String url = call.argument("url");
                 String fileName = call.argument("fileName");
@@ -68,10 +70,11 @@ public class DownloadMethodChannelHandler implements MethodChannel.MethodCallHan
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
         //设置Notification的标题和描述
         request.setTitle(fileName);
-        request.setDescription("Downloading files");
+        request.setDescription("五音助手");
         //设置Notification的显示，和隐藏。
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-
+        //DownloadManager manager = (DownloadManager) activity.getSystemService(activity.DOWNLOAD_SERVICE);
+        //return manager.enqueue(request);
         return manager.enqueue(request);
     }
 }
