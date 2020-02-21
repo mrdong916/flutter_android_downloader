@@ -9,8 +9,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 
-import java.io.File;
-
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
@@ -66,12 +64,9 @@ public class DownloadMethodChannelHandler implements MethodChannel.MethodCallHan
         request.allowScanningByMediaScanner();
         Environment.getExternalStoragePublicDirectory(directory).mkdir();
         request.setDestinationInExternalPublicDir(directory, fileName);
-        // 设置下载网络类型
-        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
-        //设置Notification的标题和描述
         request.setTitle(fileName);
+        request.setAllowedOverRoaming(true);
         request.setDescription("五音助手");
-        //设置Notification的显示，和隐藏。
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         //DownloadManager manager = (DownloadManager) activity.getSystemService(activity.DOWNLOAD_SERVICE);
         //return manager.enqueue(request);

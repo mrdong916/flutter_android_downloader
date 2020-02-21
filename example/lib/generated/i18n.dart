@@ -20,6 +20,7 @@ class S implements WidgetsLocalizations {
 
   @override
   TextDirection get textDirection => TextDirection.ltr;
+
 }
 
 class $en extends S {
@@ -112,9 +113,8 @@ class GeneratedLocalizationsDelegate extends LocalizationsDelegate<S> {
         }
 
         // If no country requirement is requested, check if this locale has no country.
-        if (true != withCountry &&
-            (supportedLocale.countryCode == null ||
-                supportedLocale.countryCode.isEmpty)) {
+        if (true != withCountry && (supportedLocale.countryCode == null ||
+            supportedLocale.countryCode.isEmpty)) {
           return true;
         }
       }

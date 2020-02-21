@@ -12,6 +12,8 @@ import java.util.Map;
 
 import io.flutter.plugin.common.EventChannel;
 
+import static android.app.DownloadManager.ACTION_DOWNLOAD_COMPLETE;
+
 public class DownloadBroadcastReceiver extends BroadcastReceiver implements EventChannel.StreamHandler {
     private Context context;
     private DownloadManager downloadManager;
@@ -25,7 +27,7 @@ public class DownloadBroadcastReceiver extends BroadcastReceiver implements Even
     @Override
     public void onListen(Object arguments, EventChannel.EventSink events) {
         this.events = events;
-        context.registerReceiver(this, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+        context.registerReceiver(this, new IntentFilter(ACTION_DOWNLOAD_COMPLETE));
     }
     @Override
     public void onCancel(Object arguments) {
@@ -35,9 +37,11 @@ public class DownloadBroadcastReceiver extends BroadcastReceiver implements Even
     @Override
     public void onReceive(Context context, Intent intent) {
         if (events != null) {
-            // 下载完成后发送给flutter下载完成的ID
-            long completeDownloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-            events.success(queryDownloadInfo(completeDownloadId));
+            if(intent.getAction()!=null && intent.getAction().equals(ACTION_DOWNLOAD_COMPLETE)){
+                // 下载完成后发送给flutter下载完成的ID
+                long completeDownloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0L);
+                events.success(queryDownloadInfo(completeDownloadId));
+            }
         }
     }
     public Map<String,Object> queryDownloadInfo(Long id) {
@@ -45,26 +49,34 @@ public class DownloadBroadcastReceiver extends BroadcastReceiver implements Even
         // 创建一个查询对象
         DownloadManager.Query query = new DownloadManager.Query().setFilterById(id);
         // 根据查询对象获取一个游标对象
-        Cursor cursor = this.downloadManager.query(query);
-        if (null != cursor) {
-            if (cursor.moveToFirst()) {
-                String uri = cursor.getString(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_URI));
-                int status = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS));
-                String local_uri = cursor.getString(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI));
-                // String total_size = cursor.getString(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
-                // String media_type = cursor.getString(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_MEDIA_TYPE));
-                // String title = cursor.getString(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TITLE));
+        Cursor cursor = null;
+        try {
+            cursor = this.downloadManager.query(query);
+            if (null != cursor) {
+                if (cursor.moveToFirst()) {
+                    String uri = cursor.getString(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_URI));
+                    int status = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS));
+                    String local_uri = cursor.getString(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI));
+                    String total_size = cursor.getString(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
+                    String media_type = cursor.getString(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_MEDIA_TYPE));
+                    String title = cursor.getString(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TITLE));
 
-                result.put("id",id);
-                result.put("uri",uri);
-                result.put("status",status);
-                result.put("local_uri",local_uri);
-                // result.put("media_type",media_type);
-                // result.put("total_size",total_size);
-                // result.put("title",title);
+                    result.put("id",id);
+                    result.put("uri",uri);
+                    result.put("status",status);
+                    result.put("local_uri",local_uri);
+                    result.put("media_type",media_type);
+                    result.put("total_size",total_size);
+                    result.put("title",title);
+                }
             }
-            cursor.close();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
+
+
         return result;
     }
 }
