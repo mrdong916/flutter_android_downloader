@@ -48,20 +48,20 @@ public class DownloadBroadcastReceiver extends BroadcastReceiver implements Even
         Cursor cursor = this.downloadManager.query(query);
         if (null != cursor) {
             if (cursor.moveToFirst()) {
-                String title = cursor.getString(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TITLE));
                 String uri = cursor.getString(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_URI));
                 int status = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS));
                 String local_uri = cursor.getString(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI));
-                String media_type = cursor.getString(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_MEDIA_TYPE));
-                String total_size = cursor.getString(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
+                // String total_size = cursor.getString(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
+                // String media_type = cursor.getString(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_MEDIA_TYPE));
+                // String title = cursor.getString(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TITLE));
 
                 result.put("id",id);
-                result.put("title",title);
                 result.put("uri",uri);
                 result.put("status",status);
                 result.put("local_uri",local_uri);
-                result.put("media_type",media_type);
-                result.put("total_size",total_size);
+                // result.put("media_type",media_type);
+                // result.put("total_size",total_size);
+                // result.put("title",title);
             }
             cursor.close();
         }
