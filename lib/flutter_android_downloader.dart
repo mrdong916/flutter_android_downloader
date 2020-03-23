@@ -4,17 +4,21 @@ import 'package:flutter/services.dart';
 
 class FlutterAndroidDownloader {
   static MethodChannel _methodChannel =
-  const MethodChannel('com.bzqll.android_downloader/download');
+      const MethodChannel('com.bzqll.android_downloader/download');
 
   static EventChannel _eventChannel =
-  const EventChannel('com.bzqll.android_downloader/complete');
+      const EventChannel('com.bzqll.android_downloader/complete');
 
   static Stream _streamSubscription;
 
-  static Future<int> download(String url, String directory,
-      String fileName) async {
-    return await _methodChannel.invokeMethod<int>(
-        'download', {'url': url, 'directory': directory, 'fileName': fileName});
+  static Future<int> download(
+      String url, String directory, String fileName, String originName) async {
+    return await _methodChannel.invokeMethod<int>('download', {
+      'url': url,
+      'directory': directory,
+      'fileName': fileName,
+      'originName': originName
+    });
   }
 
   static Future<String> get platformVersion async {

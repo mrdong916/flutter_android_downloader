@@ -43,6 +43,7 @@ public class DownloadMethodChannelHandler implements MethodChannel.MethodCallHan
                 String url = call.argument("url");
                 String fileName = call.argument("fileName");
                 String directory = call.argument("directory");
+                String originName = call.argument("originName");
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (context.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
@@ -50,23 +51,23 @@ public class DownloadMethodChannelHandler implements MethodChannel.MethodCallHan
                         this.activity.requestPermissions(permissions, PERMISSION_CODE);
 
                     } else {
-                        downloadId = startDownload(url,fileName,directory);
+                        downloadId = startDownload(url,fileName,directory,originName);
                     }
                 } else {
-                    downloadId = startDownload(url,fileName,directory);
+                    downloadId = startDownload(url,fileName,directory,originName);
                 }
                 result.success(downloadId);
                 break;
         }
     }
-    private long startDownload(String url,String fileName,String directory) {
+    private long startDownload(String url,String fileName,String directory,String originName) {
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
         request.allowScanningByMediaScanner();
         Environment.getExternalStoragePublicDirectory(directory).mkdir();
         request.setDestinationInExternalPublicDir(directory, fileName);
         request.setTitle(fileName);
         request.setAllowedOverRoaming(true);
-        request.setDescription("五音助手");
+        request.setDescription(originName);
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         //DownloadManager manager = (DownloadManager) activity.getSystemService(activity.DOWNLOAD_SERVICE);
         //return manager.enqueue(request);

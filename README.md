@@ -16,7 +16,7 @@ dependencies:
 ## 创建下载
 
 ```dart
-int downloadId = FlutterAndroidDownloader.download("url", "path", "fileName");
+int downloadId = FlutterAndroidDownloader.download("url", "path", "fileName"，"originName");
 ```
 
 > 参数说明
@@ -27,13 +27,14 @@ int downloadId = FlutterAndroidDownloader.download("url", "path", "fileName");
 
 - fileName: 保存的文件名称
 
+- originName: 下载来源名称
+
 ## 监听下载完成回调信息
 ```dart
 FlutterAndroidDownloader.listen((data) {
   print("success $data");
   // to do something
 });
-/// 打印信息： success {media_type: application/vnd.android.package-archive, local_uri: file:///storage/emulated/0/ABC/qq.apk, total_size: 80899231, title: qq.apk, uri: https://qd.myapp.com/myapp/qqteam/AndroidQQ/mobileqq_android.apk, status: 8}
 ```
 
 > 具体返回参数信息参考 [DownloadManager API](https://developer.android.com/reference/android/app/DownloadManager.html#COLUMN_STATUS)
@@ -80,7 +81,8 @@ class _MyAppState extends State<MyApp> {
     int id = await FlutterAndroidDownloader.download(
         "https://qd.myapp.com/myapp/qqteam/AndroidQQ/mobileqq_android.apk",
         "/ABC",
-        "qq.apk");
+        "qq.apk"，
+        "QQ");
     print("ID => $id");
 
     /// to do something
