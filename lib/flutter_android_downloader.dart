@@ -11,13 +11,14 @@ class FlutterAndroidDownloader {
 
   static Stream _streamSubscription;
 
-  static Future<int> download(
-      String url, String directory, String fileName, String originName) async {
+  static Future<int> download(String url, String directory, String fileName,
+      String originName, Map<String, String> headers) async {
     return await _methodChannel.invokeMethod<int>('download', {
       'url': url,
       'directory': directory,
       'fileName': fileName,
-      'originName': originName
+      'originName': originName,
+      'headers': headers ?? {}
     });
   }
 

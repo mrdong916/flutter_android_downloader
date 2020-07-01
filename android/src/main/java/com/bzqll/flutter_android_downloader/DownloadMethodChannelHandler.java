@@ -9,6 +9,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 
+import java.util.Map;
+
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
@@ -44,6 +46,7 @@ public class DownloadMethodChannelHandler implements MethodChannel.MethodCallHan
                 String fileName = call.argument("fileName");
                 String directory = call.argument("directory");
                 String originName = call.argument("originName");
+                Map<String,String> headers = call.argument("headers");
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (context.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
@@ -51,17 +54,22 @@ public class DownloadMethodChannelHandler implements MethodChannel.MethodCallHan
                         this.activity.requestPermissions(permissions, PERMISSION_CODE);
 
                     } else {
-                        downloadId = startDownload(url,fileName,directory,originName);
+                        downloadId = startDownload(url,fileName,directory,originName,headers);
                     }
                 } else {
-                    downloadId = startDownload(url,fileName,directory,originName);
+                    downloadId = startDownload(url,fileName,directory,originName,headers);
                 }
                 result.success(downloadId);
                 break;
         }
     }
-    private long startDownload(String url,String fileName,String directory,String originName) {
+    private long startDownload(String url, String fileName, String directory, String originName, Map<String, String> headers) {
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+        if(headers!=null){
+            for (String key:headers.keySet()){
+                request.addRequestHeader(key,headers.get(key));
+            }
+        }
         request.allowScanningByMediaScanner();
         Environment.getExternalStoragePublicDirectory(directory).mkdir();
         request.setDestinationInExternalPublicDir(directory, fileName);

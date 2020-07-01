@@ -35,9 +35,12 @@ class _MyAppState extends State<MyApp> {
 
   void download() async {
     int id = await FlutterAndroidDownloader.download(
-        "https://dl.hdslb.com/mobile/latest/iBiliPlayer-bili.apk?t=1582264529000",
-        "/五音",
-        "bilibili.apk");
+      "https://dl.hdslb.com/mobile/latest/iBiliPlayer-bili.apk?t=1582264529000",
+      "/五音",
+      "bilibili.apk",
+      'test',
+      null,
+    );
     print("ID => $id");
 
     /// to do something
