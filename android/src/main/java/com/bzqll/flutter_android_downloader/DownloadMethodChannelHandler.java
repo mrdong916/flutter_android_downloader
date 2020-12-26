@@ -70,15 +70,7 @@ public class DownloadMethodChannelHandler implements MethodChannel.MethodCallHan
                 request.addRequestHeader(key,headers.get(key));
             }
         }
-        request.allowScanningByMediaScanner();
-
-        if (Build.VERSION.SDK_INT >=30) {
-            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
-        }else {
-            File file =  Environment.getExternalStoragePublicDirectory(directory);
-            file.mkdir();
-            request.setDestinationInExternalPublicDir(file.getAbsolutePath(), fileName);
-        }
+        request.setDestinationInExternalPublicDir(directory, fileName);
         request.setTitle(fileName);
         request.setAllowedOverRoaming(true);
         request.setDescription(originName);
