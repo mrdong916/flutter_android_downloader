@@ -21,7 +21,7 @@ int downloadId = FlutterAndroidDownloader.download("url", "path", "fileName","or
 > 参数说明
 
 | 参数 | 参数类型 |说明 |
-| :-----| :-----|
+| :-----| :-----| :-----|
 | url | String | 下载地址 |
 | path | String | 下载路径,Android10及以上默认下载到内置存储目录的Download文件夹 |
 | fileName | String | 保存的文件名称 |
