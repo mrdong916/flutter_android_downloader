@@ -1,11 +1,7 @@
-## 0.0.4
+## 1.0.0
 
 * fix bug
 * Support Android 11
-
-## 0.0.3
-
-* fix bug
 
 ## 0.0.2
 

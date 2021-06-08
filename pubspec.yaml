@@ -1,12 +1,11 @@
 name: flutter_android_downloader
 description: A plugin that uses the Android download manager
-version: 0.0.4
+version: 1.0.0
 homepage: https://github.com/mrdong916/flutter_android_downloader
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
   flutter: ">=1.17.0"
-
 dependencies:
   flutter:
     sdk: flutter

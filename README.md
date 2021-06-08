@@ -9,7 +9,7 @@ flutter_android_downloader 一个调用安卓系统下载管理器的插件
 
 ```yaml
 dependencies:
-  flutter_android_downloader: ^0.0.4
+  flutter_android_downloader: ^1.0.0
 ```
 
 ## 创建下载
