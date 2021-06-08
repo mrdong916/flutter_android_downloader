@@ -15,7 +15,7 @@ dependencies:
 ## 创建下载
 
 ```dart
-int downloadId = FlutterAndroidDownloader.download("url", "path", "fileName","originName","originName");
+int downloadId = FlutterAndroidDownloader.download("url", "path", "fileName","originName","headers");
 ```
 
 > 参数说明
