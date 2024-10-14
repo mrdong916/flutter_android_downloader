@@ -86,6 +86,9 @@ public class DownloadMethodChannelHandler implements MethodChannel.MethodCallHan
         request.setAllowedOverRoaming(true);
         request.setDescription(originName);
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        // 必须设置下载可见  否则下载程序将会在7天左右自动清理空闲的文件 
+        // 从AndroidQ以后 必须要下载到 使用该方法获取的公用下载路径才可见Environment#getExternalStoragePublicDirectory(String) with Environment#DIRECTORY_DOWNLOADS)
+        request.setVisibleInDownloadsUi(true);
         return manager.enqueue(request);
     }
 }
